@@ -4,8 +4,7 @@ import companyModel from "../../DB/models/company.model.js";
 import jobModel from "../../DB/models/job.model.js";
 import { fileUpload } from "../../utils/fiile uploading/fileUploading.js";
 import { applicationStatus } from "../../DB/valuesEnums.js";
-import { emailEmitter } from "../../utils/email/emailEvent.js";
-// import { io } from "../../../index.js";
+import { io } from "../Socket.io/index.js";
 
 export const addApplication = async (req, res, next) => {
   const application = await DBservices.create({
@@ -29,8 +28,10 @@ export const addApplication = async (req, res, next) => {
     });
   }
 
-  io.emit("newApplication", {
-    message: "new application has been submitted",
+  io.to("HRs").emit("newApplication", {
+    message: "New application has been submitted",
+    jobId: application.jobId,
+    applicantId: application.userId,
   });
 
   return res
